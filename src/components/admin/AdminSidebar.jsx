@@ -1,12 +1,13 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { FiHome, FiUsers, FiBox, FiShoppingCart, FiSettings } from 'react-icons/fi';
+import { FiHome, FiUsers, FiBox,FiLayers, FiShoppingCart, FiSettings } from 'react-icons/fi';
 
 function AdminSidebar() {
   const navItems = [
     { name: 'Dashboard', path: '/admin', icon: <FiHome className="w-5 h-5 mr-3" /> },
     { name: 'Users', path: '/admin/users', icon: <FiUsers className="w-5 h-5 mr-3" /> },
     { name: 'Products', path: '/admin/products', icon: <FiBox className="w-5 h-5 mr-3" /> },
+    { name: 'Categories', path: '/admin/categories', icon: <FiLayers className="w-5 h-5 mr-3" /> },
     { name: 'Orders', path: '/admin/orders', icon: <FiShoppingCart className="w-5 h-5 mr-3" /> },
   ];
 
@@ -25,10 +26,9 @@ function AdminSidebar() {
             to={item.path}
             end={item.path === '/admin'}
             className={({ isActive }) =>
-              `flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${
-                isActive
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+              `flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${isActive
+                ? 'bg-blue-600 text-white'
+                : 'text-gray-400 hover:bg-gray-800 hover:text-white'
               }`
             }
           >

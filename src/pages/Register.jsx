@@ -27,7 +27,6 @@ export default function Register() {
       let message = 'Something went wrong!';
 
       if (error.response && error.response.data) {
-        // Laravel عادة بيرجع errors أو message
         message = error.response.data.message || JSON.stringify(error.response.data.errors);
       } else {
         message = error.message;

@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="bg-gray-900 text-white pt-12 pb-8 mt-auto">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
-          <h3 className="text-2xl font-bold tracking-wide mb-4">MyShop</h3>
+          <h3 className="text-2xl font-bold tracking-wide mb-4">Cartify</h3>
           <p className="text-gray-400 mb-4">Your one-stop shop for everything you need. Quality products, competitive prices.</p>
           <div className="flex space-x-4">
             <a href="#" className="text-gray-400 hover:text-white transition-colors"><FaFacebook size={24} /></a>
@@ -44,7 +44,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
-        &copy; {new Date().getFullYear()} MyShop. All rights reserved.
+        &copy; {new Date().getFullYear()} Cartify. All rights reserved.
       </div>
     </footer>
   );

@@ -1,14 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiEdit2, FiTrash2, FiSearch } from 'react-icons/fi';
+import { getUsers, deleteUser } from '../../services/api/UserService';
+import Swal from 'sweetalert2';
 
 function AdminUsers() {
-  const users = [
-    { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Customer', status: 'Active', date: '2023-10-12' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'Admin', status: 'Active', date: '2023-09-05' },
-    { id: 3, name: 'Robert Johnson', email: 'robert@example.com', role: 'Customer', status: 'Inactive', date: '2023-11-20' },
-    { id: 4, name: 'Emily Davis', email: 'emily@example.com', role: 'Customer', status: 'Active', date: '2023-12-01' },
-    { id: 5, name: 'Michael Wilson', email: 'michael@example.com', role: 'Customer', status: 'Active', date: '2024-01-15' },
-  ];
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [roleFilter, setRoleFilter] = useState('All Roles');
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const data = await getUsers();
+      setUsers(data || []);
+    } catch (error) {
+      console.error(error);
+      Swal.fire('Error', 'Failed to fetch users.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const handleDeleteUser = async (id) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteUser(id);
+        setUsers(prev => prev.filter(user => user.id !== id));
+        Swal.fire('Deleted!', 'User has been deleted.', 'success');
+      } catch (error) {
+        console.error(error);
+        Swal.fire('Error', 'Failed to delete user.', 'error');
+      }
+    }
+  };
+
+  const filteredUsers = users.filter(user => {
+    const term = search.toLowerCase();
+    const matchesSearch = user.name.toLowerCase().includes(term) || user.email.toLowerCase().includes(term);
+    const matchesRole = roleFilter === 'All Roles' || user.role === roleFilter;
+    return matchesSearch && matchesRole;
+  });
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -27,19 +71,20 @@ function AdminUsers() {
               type="text"
               placeholder="Search users..."
               className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 w-64 text-sm"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
             />
           </div>
           <div className="flex space-x-2 text-sm">
             <span className="text-gray-500 self-center">Filter by:</span>
-            <select className="border border-gray-200 rounded-lg px-2 py-1 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+            <select
+              className="border border-gray-200 rounded-lg px-2 py-1 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              value={roleFilter}
+              onChange={e => setRoleFilter(e.target.value)}
+            >
               <option>All Roles</option>
               <option>Admin</option>
               <option>Customer</option>
-            </select>
-            <select className="border border-gray-200 rounded-lg px-2 py-1 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50">
-              <option>All Status</option>
-              <option>Active</option>
-              <option>Inactive</option>
             </select>
           </div>
         </div>
@@ -50,13 +95,16 @@ function AdminUsers() {
               <tr className="bg-gray-50 border-b border-gray-100">
                 <th className="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">User</th>
                 <th className="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
-                <th className="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                 <th className="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Date Added</th>
                 <th className="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {users.map((user) => (
+              {loading ? (
+                <tr><td colSpan="5" className="text-center py-4 text-gray-500">Loading users...</td></tr>
+              ) : filteredUsers.length === 0 ? (
+                <tr><td colSpan="5" className="text-center py-4 text-gray-500">No users found.</td></tr>
+              ) : filteredUsers.map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
                   <td className="py-4 px-6">
                     <div className="flex items-center">
@@ -72,21 +120,16 @@ function AdminUsers() {
                   <td className="py-4 px-6">
                     <span className="text-sm text-gray-700">{user.role}</span>
                   </td>
-                  <td className="py-4 px-6">
-                    <span
-                      className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        user.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
-                      }`}
-                    >
-                      {user.status}
-                    </span>
-                  </td>
-                  <td className="py-4 px-6 text-sm text-gray-500">{user.date}</td>
+                  <td className="py-4 px-6 text-sm text-gray-500">{new Date(user.created_at).toLocaleDateString()}</td>
                   <td className="py-4 px-6 text-right text-sm font-medium">
                     <button className="text-blue-600 hover:text-blue-900 mr-3 transition-colors" title="Edit">
                       <FiEdit2 className="w-5 h-5 inline" />
                     </button>
-                    <button className="text-red-500 hover:text-red-700 transition-colors" title="Delete">
+                    <button
+                      className="text-red-500 hover:text-red-700 transition-colors"
+                      title="Delete"
+                      onClick={() => handleDeleteUser(user.id)}
+                    >
                       <FiTrash2 className="w-5 h-5 inline" />
                     </button>
                   </td>

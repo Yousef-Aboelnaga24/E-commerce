@@ -20,7 +20,11 @@ export default function Login() {
         password
       })
       login(res.data)
-      navigate('/');
+      if (res.data.user.role.toLowerCase() === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/user/dashboard');
+      }
     } catch (error) {
       let message = 'Something went wrong!';
 

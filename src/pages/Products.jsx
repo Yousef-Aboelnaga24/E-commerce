@@ -10,6 +10,7 @@ export default function Products() {
   const [loading, setLoading] = useState(true);
   const [searchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
+  const searchParam = searchParams.get('search');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,7 +20,7 @@ export default function Products() {
         setCategories(cats);
 
         const categoryObj = cats.find(cat => cat.name === categoryParam);
-        const productsData = await getProducts(categoryObj?.id);
+        const productsData = await getProducts(categoryObj?.id, searchParam);
         setProducts(productsData);
       } catch (error) {
         console.error(error);
@@ -29,13 +30,19 @@ export default function Products() {
     };
 
     fetchData();
-  }, [categoryParam]);
+  }, [categoryParam, searchParam]);
+
+  const getTitle = () => {
+    if (searchParam) return `Search results for "${searchParam}"`;
+    if (categoryParam) return categoryParam;
+    return 'All Products';
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8" data-aos="fade-in">
         <h1 className="text-3xl font-bold text-gray-900 capitalize">
-          {categoryParam ? categoryParam : 'All Products'}
+          {getTitle()}
         </h1>
         <p className="mt-2 text-gray-500">
           Showing {products.length} {products.length === 1 ? 'result' : 'results'}

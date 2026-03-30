@@ -2,24 +2,24 @@ import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { createOrder } from '../services/api/Order';
 
 export default function Checkout() {
   const { cartItems, clearCart } = useCart();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  
+
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const shipping = subtotal > 0 ? 15 : 0;
   const total = subtotal + shipping;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Simulate order placement
-    setTimeout(() => {
+
+    try {
+      await createOrder(cartItems);
       clearCart();
-      setLoading(false);
       Swal.fire({
         title: 'Order Completed!',
         text: 'Your order has been placed successfully.',
@@ -28,7 +28,20 @@ export default function Checkout() {
       }).then(() => {
         navigate('/products');
       });
-    }, 2000);
+    } catch (error) {
+      console.error(error);
+      let message = 'Failed to place order. Please try again.';
+      if (error.response && error.response.data) {
+        message = error.response.data.message || message;
+      }
+      Swal.fire({
+        title: 'Error',
+        text: message,
+        icon: 'error'
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (cartItems.length === 0) {
@@ -39,7 +52,7 @@ export default function Checkout() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
-      
+
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="lg:w-2/3">
           <form id="checkout-form" onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
@@ -97,7 +110,7 @@ export default function Checkout() {
         <div className="lg:w-1/3">
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24">
             <h2 className="text-xl font-bold text-gray-900 mb-4">Order Summary</h2>
-            
+
             <div className="divide-y divide-gray-100 mb-4 max-h-64 overflow-y-auto">
               {cartItems.map(item => (
                 <div key={item.id} className="py-3 flex items-center justify-between">
@@ -112,7 +125,7 @@ export default function Checkout() {
                 </div>
               ))}
             </div>
-            
+
             <div className="border-t border-gray-200 pt-4 space-y-2 mb-6 text-sm">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal</span>
@@ -127,8 +140,8 @@ export default function Checkout() {
                 <span className="text-blue-600">${total.toFixed(2)}</span>
               </div>
             </div>
-            
-            <button 
+
+            <button
               type="submit"
               form="checkout-form"
               disabled={loading}

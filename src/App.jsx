@@ -1,10 +1,10 @@
 import { Routes, Route } from "react-router-dom"
 
 // Layout Components
-import MainLayout from "./components/MainLayout"
-import AdminLayout from "./components/AdminLayout"
+import MainLayout from "./components/layout/MainLayout"
+import AdminLayout from "./components/layout/AdminLayout"
 import OfflineAlert from "./components/OfflineAlert"
-import AdminProtectedRoute from "./components/AdminProtectedRoute"
+import AdminProtectedRoute from "./routes/AdminProtectedRoute"
 
 // Public Pages
 import LandingPage from './pages/LandingPage';
@@ -21,7 +21,13 @@ import NotFound from "./pages/NotFound"
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminProducts from './pages/admin/AdminProducts';
+import AdminCategories from './pages/admin/AdminCategories';
 import AdminOrders from './pages/admin/AdminOrders';
+
+// User Pages
+import UserDashboard from './pages/user/UserDashboard';
+import UserOrders from './pages/user/UserOrders';
+import ProtectedRoute from './routes/ProtectedRoute';
 
 function App() {
   return (
@@ -37,9 +43,17 @@ function App() {
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/checkout" element={<Checkout />} />
         </Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="*" element={<NotFound />} />
+
+        {/* User Dashboard Routes */}
+        <Route path="/user" element={<ProtectedRoute />}>
+          <Route element={<MainLayout />}>
+            <Route path="dashboard" element={<UserDashboard />} />
+            <Route path="orders" element={<UserOrders />} />
+          </Route>
+        </Route>
 
         {/* Admin Dashboard Protected Routes */}
         <Route path="/admin" element={<AdminProtectedRoute />}>
@@ -47,6 +61,7 @@ function App() {
             <Route index element={<AdminDashboard />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="products" element={<AdminProducts />} />
+            <Route path="categories" element={<AdminCategories />} />
             <Route path="orders" element={<AdminOrders />} />
           </Route>
         </Route>

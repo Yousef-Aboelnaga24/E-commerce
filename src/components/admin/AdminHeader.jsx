@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiLogOut, FiArrowLeft } from 'react-icons/fi';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 function AdminHeader() {
   const { user, logout } = useAuth();

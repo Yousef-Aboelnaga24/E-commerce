@@ -1,14 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiEye, FiSearch, FiFilter } from 'react-icons/fi';
+import { getOrders } from '../../services/api/Order';
+import Swal from 'sweetalert2';
 
 function AdminOrders() {
-  const orders = [
-    { id: '#ORD-7352', customer: 'John Doe', date: 'Oct 24, 2023', amount: '$129.00', status: 'Completed', items: 2 },
-    { id: '#ORD-7353', customer: 'Jane Smith', date: 'Oct 25, 2023', amount: '$45.50', status: 'Processing', items: 1 },
-    { id: '#ORD-7354', customer: 'Robert Johnson', date: 'Oct 26, 2023', amount: '$299.99', status: 'Shipped', items: 1 },
-    { id: '#ORD-7355', customer: 'Emily Davis', date: 'Oct 27, 2023', amount: '$89.00', status: 'Pending', items: 3 },
-    { id: '#ORD-7356', customer: 'Michael Wilson', date: 'Oct 27, 2023', amount: '$150.25', status: 'Cancelled', items: 4 },
-  ];
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All Orders');
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setLoading(true);
+      try {
+        const data = await getOrders();
+        setOrders(data);
+      } catch (error) {
+        console.error(error);
+        Swal.fire('Error', 'Failed to fetch orders.', 'error');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOrders();
+  }, []);
+
+  const filteredOrders = orders.filter(order => {
+    const term = search.toLowerCase();
+    const matchesSearch = order.id.toString().includes(term) || 
+                          (order.user?.name || '').toLowerCase().includes(term);
+    const matchesStatus = statusFilter === 'All Orders' || order.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -27,11 +50,17 @@ function AdminOrders() {
               type="text"
               placeholder="Search by Order ID or Customer..."
               className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 w-80 text-sm"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
             />
           </div>
           <div className="flex space-x-2 text-sm">
             <span className="text-gray-500 self-center">Status:</span>
-            <select className="border border-gray-200 rounded-lg px-2 py-1 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+            <select 
+              className="border border-gray-200 rounded-lg px-2 py-1 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+              value={statusFilter}
+              onChange={e => setStatusFilter(e.target.value)}
+            >
               <option>All Orders</option>
               <option>Completed</option>
               <option>Processing</option>
@@ -55,13 +84,17 @@ function AdminOrders() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {orders.map((order) => (
+              {loading ? (
+                <tr><td colSpan="7" className="text-center py-4 text-gray-500">Loading orders...</td></tr>
+              ) : filteredOrders.length === 0 ? (
+                <tr><td colSpan="7" className="text-center py-4 text-gray-500">No orders found.</td></tr>
+              ) : filteredOrders.map((order) => (
                 <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="py-4 px-6 text-sm font-medium text-blue-600">{order.id}</td>
-                  <td className="py-4 px-6 text-sm text-gray-900 font-medium">{order.customer}</td>
-                  <td className="py-4 px-6 text-sm text-gray-500">{order.date}</td>
-                  <td className="py-4 px-6 text-sm text-gray-700">{order.items}</td>
-                  <td className="py-4 px-6 text-sm font-bold text-gray-900">{order.amount}</td>
+                  <td className="py-4 px-6 text-sm font-medium text-blue-600">#{order.id}</td>
+                  <td className="py-4 px-6 text-sm text-gray-900 font-medium">{order.user?.name || 'Guest'}</td>
+                  <td className="py-4 px-6 text-sm text-gray-500">{new Date(order.created_at).toLocaleDateString()}</td>
+                  <td className="py-4 px-6 text-sm text-gray-700">{order.items?.length || 0}</td>
+                  <td className="py-4 px-6 text-sm font-bold text-gray-900">${Number(order.totalPrice).toFixed(2)}</td>
                   <td className="py-4 px-6">
                     <span
                       className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${

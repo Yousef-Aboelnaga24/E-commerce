@@ -11,10 +11,10 @@ export default function LandingPage() {
     const fetchProducts = async () => {
       try {
         const data = await getProducts()
-        setProducts(data)
+        setProducts(data || [])
       } catch (error) {
         console.error(error);
-      }finally{
+      } finally {
         setLoading(false)
       }
     }
@@ -49,8 +49,8 @@ export default function LandingPage() {
           <h2 className="text-3xl font-bold mb-4">Subscribe for Exclusive Offers</h2>
           <p className="mb-8">Join our newsletter to receive the best deals and latest updates.</p>
           <div className="max-w-md mx-auto flex">
-            <input type="email" placeholder="Email Address" className="flex-1 py-3 px-4 rounded-l-lg text-gray-900" />
-            <button className="bg-gray-900 hover:bg-black py-3 px-6 rounded-r-lg font-semibold transition-colors">Subscribe</button>
+            <input type="email" placeholder="Email Address" className="flex-1 py-3 px-4 rounded-l-lg text-white border-2 border-gray-900" />
+            <button className="bg-gray-900 cursor-pointer hover:bg-black py-3 px-6 rounded-r-lg font-semibold transition-colors">Subscribe</button>
           </div>
         </div>
       </div>
