@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://cartify.free.laravel.cloud/api',
+  baseURL: process.env.REACT_APP_API_URL,
   headers: {
-    Accept: 'application/json'
-  }
+    Accept: 'application/json',
+  },
 });
 
 api.interceptors.request.use(config => {
