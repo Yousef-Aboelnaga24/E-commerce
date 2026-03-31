@@ -1,8 +1,10 @@
 import React from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 export default function Footer() {
+  const { isLoggedIn, user } = useAuth();
   return (
     <footer className="bg-gray-900 text-white pt-12 pb-8 mt-auto">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -22,16 +24,45 @@ export default function Footer() {
             <li><NavLink to="/" className="text-gray-400 hover:text-white transition-colors">Home</NavLink></li>
             <li><NavLink to="/products" className="text-gray-400 hover:text-white transition-colors">Products</NavLink></li>
             <li><NavLink to="/cart" className="text-gray-400 hover:text-white transition-colors">Cart</NavLink></li>
-            <li><NavLink to="/login" className="text-gray-400 hover:text-white transition-colors">Login</NavLink></li>
+            {isLoggedIn ? (
+              user?.role === "admin" ? (
+                <li>
+                  <NavLink
+                    to="/admin"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    Admin
+                  </NavLink>
+                </li>
+              ) : (
+                <li>
+                  <NavLink
+                    to="/orders"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    Orders
+                  </NavLink>
+                </li>
+              )
+            ) : (
+              <li>
+                <NavLink
+                  to="/login"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Login
+                </NavLink>
+              </li>
+            )}
           </ul>
         </div>
         <div>
           <h4 className="text-lg font-semibold mb-4">Customer Service</h4>
           <ul className="space-y-2">
-            <li><a href="#" className="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
-            <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Shipping & Returns</a></li>
-            <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
-            <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms & Conditions</a></li>
+            <li><Link to="/faq" className="text-gray-400 hover:text-white transition-colors">FAQ</Link></li>
+            <li><Link to="#" className="text-gray-400 hover:text-white transition-colors">Shipping & Returns</Link></li>
+            <li><Link to="/contact" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link></li>
+            <li><Link to="#" className="text-gray-400 hover:text-white transition-colors">Terms & Conditions</Link></li>
           </ul>
         </div>
         <div>

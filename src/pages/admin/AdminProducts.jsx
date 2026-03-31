@@ -27,14 +27,14 @@ function AdminProducts() {
 
   useEffect(() => {
     fetchProducts();
-  const fetchCats = async () => {
-    try {
-      const data = await getCategories();
-      setCategories(data || []);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    const fetchCats = async () => {
+      try {
+        const data = await getCategories();
+        setCategories(data || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
     fetchCats();
   }, []);
 
@@ -94,7 +94,7 @@ function AdminProducts() {
   const filteredProducts = products.filter(p => {
     return (
       p.name.toLowerCase().includes(search.toLowerCase()) &&
-      (selectedCategory === 'All' || p.category === selectedCategory)
+      (selectedCategory === 'All' || p.categoryName === selectedCategory)
     );
   });
 

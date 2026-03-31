@@ -15,6 +15,9 @@ import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Wishlist from './pages/Wishlist';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import FAQ from './pages/FAQ';
 import NotFound from "./pages/NotFound"
 
 // Admin Pages
@@ -42,6 +45,10 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
+
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -66,6 +73,7 @@ function App() {
           </Route>
         </Route>
       </Routes>
+
     </>
   )
 }

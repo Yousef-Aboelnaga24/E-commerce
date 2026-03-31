@@ -48,11 +48,17 @@ function AdminUsers() {
   };
 
   const filteredUsers = users.filter(user => {
-    const term = search.toLowerCase();
-    const matchesSearch = user.name.toLowerCase().includes(term) || user.email.toLowerCase().includes(term);
-    const matchesRole = roleFilter === 'All Roles' || user.role === roleFilter;
-    return matchesSearch && matchesRole;
-  });
+  const term = search.toLowerCase();
+  const matchesSearch =
+    user.name.toLowerCase().includes(term) ||
+    user.email.toLowerCase().includes(term);
+
+  const matchesRole =
+    roleFilter === 'All Roles' ||
+    user.role.toLowerCase() === roleFilter.toLowerCase();
+
+  return matchesSearch && matchesRole;
+});
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -84,7 +90,7 @@ function AdminUsers() {
             >
               <option>All Roles</option>
               <option>Admin</option>
-              <option>Customer</option>
+              <option>User</option>
             </select>
           </div>
         </div>

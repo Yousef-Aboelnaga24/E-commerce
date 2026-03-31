@@ -102,7 +102,7 @@ const UserDashboard = () => {
                       <tr><td colSpan="4" className="px-6 py-4 text-center">No recent orders.</td></tr>
                     ) : recentOrders.map((order) => (
                       <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 font-medium text-gray-900">#{order.id}</td>
+                        <td className="px-6 py-4 font-medium text-gray-900">#{order.order_number}</td>
                         <td className="px-6 py-4 text-gray-500">{new Date(order.created_at).toLocaleDateString()}</td>
                         <td className="px-6 py-4">
                           <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${

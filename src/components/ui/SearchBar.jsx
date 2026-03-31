@@ -1,35 +1,24 @@
 import React from "react";
+import Input from "../ui/InputField";
 import { MdSearch } from "react-icons/md";
-import Input  from "./InputField";
 
-export default function SearchBar() {
+export default function SearchBar({ value, onChange, onSearch, className }) {
     return (
-        <div className="w-full max-w-xl mx-auto relative">
-
-            {/* Desktop & Tablet */}
-            <div className="hidden lg:flex w-full">
-                <Input
-                    type="text"
-                    placeholder="Search products..."
-                    className="rounded-l-md flex-1"
-                />
-                <button className="bg-[#3a86ff] px-4 py-2 rounded-r-md text-white hover:bg-blue-600 transition-colors">
-                    <MdSearch size={22} />
-                </button>
-            </div>
-
-            {/* Mobile */}
-            <div className="flex lg:hidden w-full relative">
-                <Input
-                    type="text"
-                    placeholder="Search..."
-                    className="rounded-md w-full pr-10"
-                />
-                <button className="absolute right-2 top-1/2 -translate-y-1/2 text-white">
-                    <MdSearch size={20} />
-                </button>
-            </div>
-
+        <div className={`relative ${className}`}>
+            <Input
+                type="text"
+                placeholder="Search products..."
+                className="w-full pl-4 pr-12 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-300 text-gray-900"
+                value={value}
+                onChange={onChange}
+                onKeyDown={onSearch}
+            />
+            <button
+                onClick={onSearch}
+                className="absolute right-0 top-0 h-full px-4 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 transition-colors"
+            >
+                <MdSearch size={20} />
+            </button>
         </div>
     );
 }

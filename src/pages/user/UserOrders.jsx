@@ -98,7 +98,7 @@ const UserOrders = () => {
                       {/* Order Info */}
                       <td className="px-6 py-4">
                         <div>
-                          <p className="font-bold">#ORD-{order.id}</p>
+                          <p className="font-bold">{order.order_number}</p>
                           <span className={`text-xs px-2 py-1 rounded ${getStatusColor(order.status)}`}>
                             {order.status}
                           </span>

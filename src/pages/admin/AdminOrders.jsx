@@ -27,9 +27,14 @@ function AdminOrders() {
 
   const filteredOrders = orders.filter(order => {
     const term = search.toLowerCase();
-    const matchesSearch = order.id.toString().includes(term) || 
-                          (order.user?.name || '').toLowerCase().includes(term);
-    const matchesStatus = statusFilter === 'All Orders' || order.status === statusFilter;
+    const matchesSearch =
+      order.id.toString().includes(term) ||
+      (order.user?.name || '').toLowerCase().includes(term);
+
+    const matchesStatus =
+      statusFilter === 'All Orders' ||
+      (order.status || '').toLowerCase() === statusFilter.toLowerCase();
+
     return matchesSearch && matchesStatus;
   });
 
@@ -56,7 +61,7 @@ function AdminOrders() {
           </div>
           <div className="flex space-x-2 text-sm">
             <span className="text-gray-500 self-center">Status:</span>
-            <select 
+            <select
               className="border border-gray-200 rounded-lg px-2 py-1 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
@@ -97,15 +102,14 @@ function AdminOrders() {
                   <td className="py-4 px-6 text-sm font-bold text-gray-900">${Number(order.totalPrice).toFixed(2)}</td>
                   <td className="py-4 px-6">
                     <span
-                      className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        order.status === 'Completed'
+                      className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${order.status === 'Completed'
                           ? 'bg-emerald-100 text-emerald-800'
                           : order.status === 'Processing' || order.status === 'Shipped'
-                          ? 'bg-blue-100 text-blue-800'
-                          : order.status === 'Pending'
-                          ? 'bg-amber-100 text-amber-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}
+                            ? 'bg-blue-100 text-blue-800'
+                            : order.status === 'Pending'
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-red-100 text-red-800'
+                        }`}
                     >
                       {order.status}
                     </span>

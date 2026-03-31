@@ -44,7 +44,7 @@ export default function LandingPage() {
         )}
       </div>
 
-      <div className="bg-blue-600 py-16 mt-12 text-white">
+      <div className="bg-blue-800 py-16 mt-12 text-white">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Subscribe for Exclusive Offers</h2>
           <p className="mb-8">Join our newsletter to receive the best deals and latest updates.</p>

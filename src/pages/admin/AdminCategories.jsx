@@ -144,7 +144,16 @@ export default function AdminCategories() {
                             <tr key={cat.id} className="hover:bg-gray-50/50 transition-colors">
                                 <td className="py-4 px-6 text-sm font-medium text-gray-900">{index + 1}</td>
                                 <td className="py-4 px-6 text-sm text-gray-500">{cat.name}</td>
-                                <td className="py-4 px-6">
+                                <td className="py-4 px-6 flex justify-end gap-2">
+                                    {/* Update Button */}
+                                    <button
+                                        onClick={() => setEditCategory(cat)}
+                                        className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                    >
+                                        Update
+                                    </button>
+
+                                    {/* Delete Button */}
                                     <button
                                         onClick={() => handleDeleteCategory(cat.id)}
                                         className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
