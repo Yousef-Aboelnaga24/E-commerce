@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
-import { FiDollarSign, FiUsers, FiShoppingBag, FiActivity } from 'react-icons/fi';
+import { FiDollarSign, FiUsers, FiShoppingBag } from 'react-icons/fi';
+import Swal from 'sweetalert2';
 import { getStatus } from '../../services/api/Status';
+import { getUsers } from '../../services/api/UserService';
 
 function AdminDashboard() {
   const [status, setStatus] = useState(null)
+  const [usersSale, setUsersSale] = useState([]);
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -15,7 +18,19 @@ function AdminDashboard() {
 
       }
     }
+
+    const fetchUsers = async () => {
+      try {
+        const data = await getUsers();
+        setUsersSale(data || []);
+      } catch (error) {
+        console.error(error);
+        Swal.fire('Error', 'Failed to fetch users.', 'error');
+      };
+    }
+
     fetchStatus()
+    fetchUsers()
   }, [])
 
   const { revenue = 0, users = 0, orders = 0 } = status || {};
@@ -68,16 +83,16 @@ function AdminDashboard() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
           <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Sales</h3>
           <div className="space-y-4">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+            {usersSale.slice(0, 5).map((user, index) => (
+              <div key={user.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                 <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-gray-100 mr-3 flex items-center justify-center text-gray-600 font-medium">{i}</div>
+                  <div className="w-10 h-10 rounded-full bg-gray-100 mr-3 flex items-center justify-center text-gray-600 font-medium">{index + 1}</div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">User {i}</p>
-                    <p className="text-xs text-gray-500">user{i}@example.com</p>
+                    <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                    <p className="text-xs text-gray-500">{user.email}</p>
                   </div>
                 </div>
-                <div className="text-sm font-bold text-gray-900">+$2{i}9.00</div>
+                <div className="text-sm font-bold text-gray-900">{user.total_spent}</div>
               </div>
             ))}
           </div>

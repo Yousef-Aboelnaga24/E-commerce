@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'cartify.free.laravel.cloud/api',
+  baseURL: 'https://cartify.free.laravel.cloud/api',
   headers: {
     Accept: 'application/json'
   }

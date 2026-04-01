@@ -160,7 +160,7 @@ function AdminProducts() {
                       <div className="h-10 w-10 rounded-lg bg-gray-200 mr-3 overflow-hidden shrink-0 flex items-center justify-center text-blue-600 font-bold text-xs">
                         {product.image ? (
                           <img
-                            src={product.image}
+                            src={product.image ? `https://cartify.free.laravel.cloud/storage/${product.image}` : ''}
                             alt={product.name}
                             className="w-full h-full object-cover"
                           />
